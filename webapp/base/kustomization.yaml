@@ -1,5 +1,5 @@
 resources:
-- ingress.yaml
-- gateway.yaml
-- virtualservice.yaml
-- destinationrule.yaml
+- webapp-ingress.yaml
+#- gateway.yaml
+#- virtualservice.yaml
+#- destinationrule.yaml
