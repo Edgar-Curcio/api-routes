@@ -1,11 +1,17 @@
+# ✅ Kong Ingress Resource - Gerenciado via Argo CD (GitOps)
+# Kong Ingress Controller lê isso e cria rotas automaticamente
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: webapp
+  namespace: api-routes
   annotations:
+    kubernetes.io/ingress.class: kong
     konghq.com/strip-path: "true"
+    konghq.com/preserve-host: "true"
+    konghq.com/plugins: webapp-rate-limit
 spec:
-  ingressClassName: kong
   rules:
   - host: api.edcurcio.com
     http:
@@ -14,9 +20,48 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: istio-ingressgateway
+            name: webapp-service
             port:
-              number: 80
+              number: 3000
+
+---
+# Rate-limiting plugin aplicado via KongPlugin (CRD)
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: webapp-rate-limit
+  namespace: api-routes
+plugin: rate-limiting
+config:
+  minute: 100
+  policy: local
+# metadata:
+#   name: webapp-rate-limit
+#   namespace: api-routes
+# plugin: rate-limiting
+# config:
+#   minute: 100
+#   policy: local
+
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: webapp
+#  annotations:
+#    konghq.com/strip-path: "true"
+#spec:
+#  ingressClassName: kong
+#  rules:
+#  - host: api.edcurcio.com
+#    http:
+#      paths:
+#      - path: /webapp
+#        pathType: Prefix
+#        backend:
+#          service:
+#            name: istio-ingressgateway
+#            port:
+#              number: 80
 
 #apiVersion: networking.k8s.io/v1
 #kind: Ingress

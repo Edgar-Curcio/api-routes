@@ -1,5 +1,3 @@
 resources:
+- service.yaml
 - webapp-ingress.yaml
-#- gateway.yaml
-#- virtualservice.yaml
-#- destinationrule.yaml

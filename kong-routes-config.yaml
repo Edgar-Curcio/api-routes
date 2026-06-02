@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kong-ingress-config
+  namespace: kong
+data:
+  # Exemplo de como adicionar rotas via script
+  # Use Kong Admin API para adicionar serviços e rotas
+  description: |
+    Kong routes são gerenciadas via Kong Admin API ou Kong Ingress Resources (CRD)
+    
+    Exemplo com Admin API:
+    
+    1. Port-forward Kong Admin:
+    kubectl port-forward -n kong svc/api-gateway-kong-admin 8001:8001 &
+    
+    2. Criar service (upstream):
+    curl -X POST http://localhost:8001/services \
+      -H "Content-Type: application/json" \
+      -d '{
+        "name": "webapp",
+        "url": "http://webapp-service.api-routes.svc.cluster.local:3000"
+      }'
+    
+    3. Criar route:
+    curl -X POST http://localhost:8001/services/webapp/routes \
+      -H "Content-Type: application/json" \
+      -d '{
+        "paths": ["/webapp"],
+        "methods": ["GET", "POST", "PUT", "DELETE"]
+      }'
+    
+    4. Adicionar plugin de rate-limit:
+    curl -X POST http://localhost:8001/services/webapp/plugins \
+      -H "Content-Type: application/json" \
+      -d '{
+        "name": "rate-limiting",
+        "config": {
+          "minute": 100,
+          "policy": "local"
+        }
+      }'
