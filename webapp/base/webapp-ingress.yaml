@@ -21,7 +21,6 @@ spec:
         backend:
           service:
             name: webapp-chart
-            namespace: webapp
             port:
               number: 5000
 
