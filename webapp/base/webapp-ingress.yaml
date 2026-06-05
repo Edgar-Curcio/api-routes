@@ -22,7 +22,7 @@ spec:
           service:
             name: webapp-service
             port:
-              number: 3000
+              number: 5000
 
 ---
 # Rate-limiting plugin aplicado via KongPlugin (CRD)
